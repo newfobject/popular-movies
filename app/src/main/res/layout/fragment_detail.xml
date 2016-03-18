@@ -1,0 +1,109 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
+        android:id="@+id/detail_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragment.DetailFragment">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_detail_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/content_description" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/iv_detail_backdrop"
+                android:layout_marginTop="-90dp">
+
+                <LinearLayout
+                    android:id="@+id/detail_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentLeft="false"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="150dp"
+                        android:layout_height="200dp">
+
+                        <ImageView
+                            android:id="@+id/iv_detail_poster"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="top|right"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/content_description" />
+                    </FrameLayout>
+
+                    <!-- TODO use string resources to format release date like this: Release date: 2015-10-11-->
+                    <!-- TODO format average rating like this: Rating: 7.42-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|bottom"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="100dp"
+                        android:background="#fffafafa"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/tv_detail_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                            android:textColor="@android:color/black"
+                            tools:text="@string/tools_title" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_releaseDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Medium Text"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            tools:text="@string/tools_release_date" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_rating"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Medium Text"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            tools:text="@string/tools_rating" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_detail_overview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/detail_info"
+                    android:background="#fffafafa"
+                    android:padding="10dp"
+                    android:text="Medium Text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    tools:text="@string/tools_overview" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
+</FrameLayout>
+
+    <!--TODO create landscape-->

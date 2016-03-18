@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+
+    <string name="content_description">none</string>
+    <!--Settings strings-->
+    <string name="pref_sort_summary_popularity">Popularity</string>
+    <string name="pref_sort_summary_rating">Rating</string>
+    <string name="pref_sort_default">popularity.desc</string>
+    <string name="pref_sort_title">Sort movies by:</string>
+    <string name="pref_sort_key">sort</string>
+    <string name="pref_summary">Select preferable sort option</string>
+
+    <!--Setting ListPreference strings-->
+    <array name="entries">
+        <item>Popularity</item>
+        <item>Rating</item>
+    </array>
+    <array name="entry_values">
+        <item>popularity.desc</item>
+        <item>vote_count.desc</item>
+
+    </array>
+
+    <!--Menus-->
+    <string name="menu_settings_title">Settings</string>
+
+
 </resources>
