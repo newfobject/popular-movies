@@ -7,13 +7,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movies_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="90dp"
-        android:gravity="center"
-        android:scrollbars="vertical"
-        android:smoothScrollbar="true"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="0dp"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 </FrameLayout>
 
-    <!--TODO create landscape-->

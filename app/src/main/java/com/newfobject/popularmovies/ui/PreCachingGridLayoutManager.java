@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 
 public class PreCachingGridLayoutManager extends GridLayoutManager {
-    private static final int DEFAULT_EXTRA_LAYOUT_SPACE = 1200;
+    private static final int DEFAULT_EXTRA_LAYOUT_SPACE = 600;
     private int extraLayoutSpace = -1;
 
     public PreCachingGridLayoutManager(Context context, int spanCount) {

@@ -24,5 +24,7 @@
     <!--Menus-->
     <string name="menu_settings_title">Settings</string>
 
+    <string name="average_rating">Average rating: %1$s</string>
+
 
 </resources>

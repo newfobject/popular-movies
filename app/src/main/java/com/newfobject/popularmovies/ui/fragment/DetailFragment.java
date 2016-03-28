@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.newfobject.popularmovies.R;
 import com.newfobject.popularmovies.data.MovieItem;
 import com.newfobject.popularmovies.ui.activity.DetailActivity;
+import com.newfobject.popularmovies.utils.Utility;
 import com.squareup.picasso.Picasso;
 
 
@@ -26,7 +28,7 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailFragment extends Fragment
         implements ObservableScrollViewCallbacks {
-    //TODO size of backdrop should depend on screen size
+    public static final String ETRA_KEY = "extra_key";
     public static String BACKDROP_URL = "http://image.tmdb.org/t/p/w780/";
     private static String BASE_URL = "http://image.tmdb.org/t/p/w342/";
     private TextView mTvTitle;
@@ -35,8 +37,8 @@ public class DetailFragment extends Fragment
     private TextView mTvOverview;
     private ImageView mIvBackdrop;
     private ImageView mIvPoster;
-    private ObservableScrollView mScrollView;
     private ActionBar mActionBar;
+    private float mBackdropAlpha;
 
 
     public DetailFragment() {
@@ -49,17 +51,33 @@ public class DetailFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
+
         init(view);
-        bindData(getActivity());
+
+        getData(getActivity());
 
         return view;
     }
 
-    void init(View view) {
+    private void getData(FragmentActivity activity) {
+        MovieItem movieItem = (MovieItem) activity.getIntent()
+                .getSerializableExtra(MoviesFragment.MOVIE_DETAIL);
+
+        if (movieItem == null) {
+            Bundle bundle = this.getArguments();
+            if (bundle != null) {
+                bindData(activity, (MovieItem) bundle.getSerializable(ETRA_KEY));
+            }
+        } else {
+            bindData(activity, movieItem);
+        }
+    }
+
+    private void init(View view) {
 
         mActionBar = DetailActivity.sActionBar;
-        mScrollView = (ObservableScrollView) view.findViewById(R.id.detail_list);
-        mScrollView.setScrollViewCallbacks(this);
+        ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.detail_list);
+        scrollView.setScrollViewCallbacks(this);
 
         mTvTitle = (TextView) view.findViewById(R.id.tv_detail_title);
         mTvReleaseDate = (TextView) view.findViewById(R.id.tv_detail_releaseDate);
@@ -69,27 +87,35 @@ public class DetailFragment extends Fragment
         mIvPoster = (ImageView) view.findViewById(R.id.iv_detail_poster);
     }
 
-    void bindData(Context context) {
+    private void bindData(Context context, MovieItem movieItem) {
 
-        MovieItem movieItem = (MovieItem) getActivity().getIntent()
-                .getSerializableExtra(MoviesFragment.MOVIE_DETAIL);
+        String backdropPath = movieItem.getBackdropPath();
+        String posterPath = movieItem.getPosterPath();
 
-        Picasso
-                .with(context)
-                .load(BACKDROP_URL.concat(movieItem.getBackdropPath()))
-                .priority(Picasso.Priority.HIGH)
-                .into(mIvBackdrop);
+        if (backdropPath != null) {
+            Picasso
+                    .with(context)
+                    .load(BACKDROP_URL.concat(backdropPath))
+                    .priority(Picasso.Priority.HIGH)
+                    .into(mIvBackdrop);
+        }
 
-        Picasso
-                .with(context)
-                .load(BASE_URL.concat(movieItem.getPosterPath()))
-                .priority(Picasso.Priority.LOW)
-                .into(mIvPoster);
+        if (posterPath != null) {
+            Picasso
+                    .with(context)
+                    .load(BASE_URL.concat(posterPath))
+                    .into(mIvPoster);
+        }
+
+        if (mActionBar != null) {
+            mActionBar.setTitle(movieItem.getTitle());
+        }
 
         mTvTitle.setText(movieItem.getTitle());
         mTvReleaseDate.setText(movieItem.getReleaseDate());
-        mTvRating.setText(movieItem.getRating());
+        mTvRating.setText(getResources().getString(R.string.average_rating, movieItem.getVoteAverage()));
         mTvOverview.setText(movieItem.getOverview());
+        mBackdropAlpha = Utility.getScreenHeight(context) / 4;
     }
 
     @Override
@@ -100,6 +126,8 @@ public class DetailFragment extends Fragment
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            float alpha = Math.min(1, mBackdropAlpha / scrollY);
+            mIvBackdrop.setAlpha(alpha);
             mIvBackdrop.setTranslationY(scrollY / 2);
         }
     }

@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="activity_horizontal_margin">10dp</dimen>
+    <dimen name="detail_poster_image_width">150dp</dimen>
+    <dimen name="detail_poster_image_height">225dp</dimen>
+</resources>
