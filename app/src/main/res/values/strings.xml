@@ -25,6 +25,8 @@
     <string name="menu_settings_title">Settings</string>
 
     <string name="average_rating">Average rating: %1$s</string>
+    <string name="trailers_title">Trailers:</string>
+    <string name="content_description_play_trailer">play trailer</string>
 
 
 </resources>

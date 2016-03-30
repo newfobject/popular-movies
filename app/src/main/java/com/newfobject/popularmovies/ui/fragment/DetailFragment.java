@@ -7,28 +7,36 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.newfobject.popularmovies.R;
+import com.newfobject.popularmovies.TrailerClickListener;
 import com.newfobject.popularmovies.data.MovieItem;
+import com.newfobject.popularmovies.data.RestClient;
+import com.newfobject.popularmovies.data.Trailer;
 import com.newfobject.popularmovies.ui.activity.DetailActivity;
 import com.newfobject.popularmovies.utils.Utility;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment
-        implements ObservableScrollViewCallbacks {
-    public static final String ETRA_KEY = "extra_key";
+        implements ObservableScrollViewCallbacks, RestClient.OnReadyTrailersCallback {
+    public static final String EXTRA_KEY = "extra_key";
+    private static final String TAG = "detail_fragment";
     public static String BACKDROP_URL = "http://image.tmdb.org/t/p/w780/";
     private static String BASE_URL = "http://image.tmdb.org/t/p/w342/";
     private TextView mTvTitle;
@@ -38,6 +46,7 @@ public class DetailFragment extends Fragment
     private ImageView mIvBackdrop;
     private ImageView mIvPoster;
     private ActionBar mActionBar;
+    private LinearLayout mTrailers;
     private float mBackdropAlpha;
 
 
@@ -66,7 +75,7 @@ public class DetailFragment extends Fragment
         if (movieItem == null) {
             Bundle bundle = this.getArguments();
             if (bundle != null) {
-                bindData(activity, (MovieItem) bundle.getSerializable(ETRA_KEY));
+                bindData(activity, (MovieItem) bundle.getSerializable(EXTRA_KEY));
             }
         } else {
             bindData(activity, movieItem);
@@ -85,6 +94,7 @@ public class DetailFragment extends Fragment
         mTvOverview = (TextView) view.findViewById(R.id.tv_detail_overview);
         mIvBackdrop = (ImageView) view.findViewById(R.id.iv_detail_backdrop);
         mIvPoster = (ImageView) view.findViewById(R.id.iv_detail_poster);
+        mTrailers = (LinearLayout) view.findViewById(R.id.trailers);
     }
 
     private void bindData(Context context, MovieItem movieItem) {
@@ -116,6 +126,11 @@ public class DetailFragment extends Fragment
         mTvRating.setText(getResources().getString(R.string.average_rating, movieItem.getVoteAverage()));
         mTvOverview.setText(movieItem.getOverview());
         mBackdropAlpha = Utility.getScreenHeight(context) / 4;
+
+        RestClient restClient = RestClient.getInstance();
+        restClient.setTrailersCallback(this);
+        restClient.getTrailers(movieItem.getId());
+
     }
 
     @Override
@@ -148,6 +163,22 @@ public class DetailFragment extends Fragment
                 if (!mActionBar.isShowing()) {
                     mActionBar.show();
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onReadyTrailers(List<Trailer> trailers) {
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        for (Trailer trailer : trailers) {
+            if (trailer.getName().toLowerCase().contains("trailer")) {
+                View view = layoutInflater.inflate(R.layout.item_trailer, mTrailers, false);
+                TextView trailerTitle = (TextView) view.findViewById(R.id.trailer_title);
+                trailerTitle.setText(trailer.getName());
+                view.setOnClickListener(new TrailerClickListener(getContext(), trailer));
+                mTrailers.addView(view);
             }
         }
     }

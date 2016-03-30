@@ -98,7 +98,7 @@ public class MoviesFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         mClient = RestClient.getInstance();
-        mClient.setCallback(mAdapter);
+        mClient.setMoviesCallback(mAdapter);
 
         mScrollListener = new EndlessScrollListener(mLayoutManager) {
             @Override

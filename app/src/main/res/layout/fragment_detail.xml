@@ -99,5 +99,22 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 tools:text="@string/tools_overview" />
 
+            <LinearLayout
+                android:id="@+id/trailers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_detail_overview"
+                android:background="#fffafafa"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/trailers_title"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorAccent" />
+            </LinearLayout>
+
         </RelativeLayout>
     </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>

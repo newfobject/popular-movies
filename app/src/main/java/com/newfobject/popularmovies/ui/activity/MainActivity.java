@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Call
             context.startActivity(intent);
         } else {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(DetailFragment.ETRA_KEY, movieItem);
+            bundle.putSerializable(DetailFragment.EXTRA_KEY, movieItem);
             DetailFragment detailFragment = new DetailFragment();
             detailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
