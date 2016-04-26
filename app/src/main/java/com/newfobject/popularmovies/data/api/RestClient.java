@@ -1,9 +1,12 @@
-package com.newfobject.popularmovies.data;
+package com.newfobject.popularmovies.data.api;
 
 
 import android.util.Log;
 
 import com.newfobject.popularmovies.BuildConfig;
+import com.newfobject.popularmovies.data.model.MovieItem;
+import com.newfobject.popularmovies.data.model.Review;
+import com.newfobject.popularmovies.data.model.Trailer;
 
 import java.util.List;
 
@@ -19,7 +22,7 @@ public class RestClient {
     private static final String TAG = "REST_client";
     private static RestClient instance = null;
     private OnReadyMoviesCallback moviesCallback;
-    private OnReadyTrailersCallback trailersCallback;
+    private DetailsCallback mDetailsCallback;
     private APIService service;
 
     public RestClient() {
@@ -69,7 +72,7 @@ public class RestClient {
             @Override
             public void onResponse(Call<Trailer.Response> call, Response<Trailer.Response> response) {
                 if (response.isSuccessful()) {
-                    trailersCallback.onReadyTrailers(response.body().getResults());
+                    mDetailsCallback.onReadyTrailers(response.body().getResults());
                 }
             }
 
@@ -80,20 +83,42 @@ public class RestClient {
         });
     }
 
+    public void getReviews(int movieId, int page) {
+        Call<Review.Respond> reviews = service.reviews(
+                movieId,
+                BuildConfig.MOVIE_API_KEY,
+                page);
+        reviews.enqueue(new Callback<Review.Respond>() {
+            @Override
+            public void onResponse(Call<Review.Respond> call, Response<Review.Respond> response) {
+                if (response.isSuccessful()) {
+                    mDetailsCallback.onReadyReviews(response.body().getReviews());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Review.Respond> call, Throwable t) {
+
+            }
+        });
+    }
+
     public void setMoviesCallback(OnReadyMoviesCallback moviesCallback) {
         this.moviesCallback = moviesCallback;
     }
 
-    public void setTrailersCallback(OnReadyTrailersCallback trailersCallback) {
-        this.trailersCallback = trailersCallback;
+    public void setDetailsCallback(DetailsCallback detailsCallback) {
+        this.mDetailsCallback = detailsCallback;
     }
 
     public interface OnReadyMoviesCallback {
         void onReadyMovies(List<MovieItem> movies);
     }
 
-    public interface OnReadyTrailersCallback {
+
+    public interface DetailsCallback {
         void onReadyTrailers(List<Trailer> trailers);
+        void onReadyReviews(List<Review> reviews);
     }
 
 }

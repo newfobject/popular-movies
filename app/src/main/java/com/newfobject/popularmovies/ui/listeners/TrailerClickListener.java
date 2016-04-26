@@ -1,11 +1,11 @@
-package com.newfobject.popularmovies;
+package com.newfobject.popularmovies.ui.listeners;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 
-import com.newfobject.popularmovies.data.Trailer;
+import com.newfobject.popularmovies.data.model.Trailer;
 
 public class TrailerClickListener implements View.OnClickListener {
     public static final String BASE_URL = "https://www.youtube.com/watch?v=";

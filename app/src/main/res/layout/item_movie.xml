@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/movie_item_container"
-    android:layout_gravity="center"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardUseCompatPadding="true"
-    card_view:cardPreventCornerOverlap="false"
-    card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="4dp">
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/movie_item_container"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    card_view:cardCornerRadius="2dp"
+                                    card_view:cardElevation="4dp"
+                                    card_view:cardPreventCornerOverlap="false"
+                                    card_view:cardUseCompatPadding="true">
 
 
     <LinearLayout
@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <com.newfobject.popularmovies.ui.views.AspectKeepingImageView
             android:id="@+id/movie_poster"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +26,8 @@
         <RelativeLayout
             android:id="@+id/movie_tag_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/title"
@@ -34,12 +35,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/favoriteView"
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"
                 android:textColor="#000"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/rating"
@@ -47,11 +49,28 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/title"
+                android:layout_toLeftOf="@+id/favoriteView"
+                android:paddingBottom="2dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:paddingTop="5dp"
                 android:singleLine="true"
-                android:textSize="12sp"
-                android:paddingBottom="2dp" />
+                android:textSize="12sp"/>
+
+            <com.newfobject.popularmovies.ui.views.FavoriteImageView
+                android:id="@+id/favoriteView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/rating"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignTop="@+id/title"
+                android:adjustViewBounds="true"
+                android:clickable="true"
+                android:padding="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/favorite_selector"/>
+
         </RelativeLayout>
 
     </LinearLayout>

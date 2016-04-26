@@ -1,4 +1,4 @@
-package com.newfobject.popularmovies.data;
+package com.newfobject.popularmovies.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -13,9 +13,11 @@ public class MovieItem implements Serializable {
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("adult")
     @Expose
     private boolean adult;
+
     @SerializedName("overview")
     @Expose
     private String overview;
@@ -52,12 +54,25 @@ public class MovieItem implements Serializable {
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
+    private boolean isFavorite;
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
 
     /**
      * @return The posterPath
      */
     public String getPosterPath() {
         return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
     /**
@@ -67,11 +82,19 @@ public class MovieItem implements Serializable {
         return adult;
     }
 
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
     /**
      * @return The overview
      */
     public String getOverview() {
         return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
     /**
@@ -81,11 +104,19 @@ public class MovieItem implements Serializable {
         return releaseDate;
     }
 
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
     /**
      * @return The genreIds
      */
     public List<Integer> getGenreIds() {
         return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
     }
 
     /**
@@ -95,11 +126,19 @@ public class MovieItem implements Serializable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     /**
      * @return The originalTitle
      */
     public String getOriginalTitle() {
         return originalTitle;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
     }
 
     /**
@@ -109,11 +148,19 @@ public class MovieItem implements Serializable {
         return originalLanguage;
     }
 
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
+
     /**
      * @return The title
      */
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -123,11 +170,19 @@ public class MovieItem implements Serializable {
         return backdropPath;
     }
 
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
     /**
      * @return The popularity
      */
     public double getPopularity() {
         return popularity;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
     }
 
     /**
@@ -137,6 +192,10 @@ public class MovieItem implements Serializable {
         return voteCount;
     }
 
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
+
     /**
      * @return The video
      */
@@ -144,11 +203,19 @@ public class MovieItem implements Serializable {
         return video;
     }
 
+    public void setVideo(boolean video) {
+        this.video = video;
+    }
+
     /**
      * @return The voteAverage
      */
     public double getVoteAverage() {
         return voteAverage;
+    }
+
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
     }
 
     public static class Response {

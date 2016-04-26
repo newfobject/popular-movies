@@ -1,4 +1,8 @@
-package com.newfobject.popularmovies.data;
+package com.newfobject.popularmovies.data.api;
+
+import com.newfobject.popularmovies.data.model.MovieItem;
+import com.newfobject.popularmovies.data.model.Review;
+import com.newfobject.popularmovies.data.model.Trailer;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -16,4 +20,10 @@ public interface APIService {
     Call<Trailer.Response> trailers(
             @Path("id") int id,
             @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<Review.Respond> reviews(
+            @Path("id") int id,
+            @Query("api_key") String apiKey,
+            @Query("page") int page);
 }

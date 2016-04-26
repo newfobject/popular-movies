@@ -1,4 +1,4 @@
-package com.newfobject.popularmovies.ui;
+package com.newfobject.popularmovies.ui.listeners;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +9,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
     RecyclerView.LayoutManager mLayoutManager;
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private int visibleThreshold = 5;
+    private int visibleThreshold = 10;
     // The current offset index of data you have loaded
     private int currentPage = 1;
     // The total number of items in the dataset after the last load

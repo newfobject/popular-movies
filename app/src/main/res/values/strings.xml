@@ -14,19 +14,31 @@
     <array name="entries">
         <item>Popularity</item>
         <item>Rating</item>
+        <item>Favorites</item>
     </array>
     <array name="entry_values">
         <item>popularity.desc</item>
         <item>vote_count.desc</item>
+        <item>favorites</item>
 
     </array>
 
     <!--Menus-->
     <string name="menu_settings_title">Settings</string>
+    <string name="menu_scroll_top">Scroll to the top</string>
 
     <string name="average_rating">Average rating: %1$s</string>
     <string name="trailers_title">Trailers:</string>
     <string name="content_description_play_trailer">play trailer</string>
+    <string name="reviews_title">Reviews:</string>
+    <string name="delete_movie_from_favorites">Delete movie from favorites?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 
+    <array name="spinner_list">
+        <item>Most Popular</item>
+        <item>Most Rated</item>
+        <item>Favorites</item>
+    </array>
 
 </resources>

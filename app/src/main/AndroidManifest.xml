@@ -21,13 +21,18 @@
         <activity android:name=".ui.activity.SettingsActivity" />
         <activity
             android:name=".ui.activity.DetailActivity"
-            android:parentActivityName=".ui.activity.MainActivity">
+            android:parentActivityName=".ui.activity.MainActivity"
+            android:theme="@style/DetailsTheme">
 
             <!-- Back button for old devices-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.MainActivity" />
         </activity>
+        <provider
+            android:name=".data.provider.MoviesProvider"
+            android:authorities="com.newfobject.provider.movies"
+            android:exported="false"/>
     </application>
 
 </manifest>

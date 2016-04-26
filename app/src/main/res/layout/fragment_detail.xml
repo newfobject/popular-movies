@@ -26,10 +26,10 @@
             </View>
 
             <RelativeLayout
+                android:id="@+id/poster_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/anchor"
-                android:id="@+id/poster_details">
+                android:layout_below="@+id/anchor">
 
                 <LinearLayout
                     android:id="@+id/detail_info"
@@ -56,35 +56,55 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom|center"
+                        android:layout_gravity="bottom|center"
                         android:background="#fffafafa"
-                        android:orientation="vertical"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp">
+                        android:orientation="horizontal"
+                        android:weightSum="10">
 
-                        <TextView
-                            android:id="@+id/tv_detail_title"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
-                            android:textColor="@android:color/black"
-                            tools:text="@string/tools_title" />
+                            android:layout_gravity="left|bottom|center"
+                            android:layout_weight="9"
+                            android:orientation="vertical"
+                            android:paddingBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="5dp">
 
-                        <TextView
-                            android:id="@+id/tv_detail_releaseDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            tools:text="@string/tools_release_date" />
+                            <TextView
+                                android:id="@+id/tv_detail_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                                android:textColor="@android:color/black"
+                                tools:text="@string/tools_title"/>
 
-                        <TextView
-                            android:id="@+id/tv_detail_rating"
-                            android:layout_width="match_parent"
+                            <TextView
+                                android:id="@+id/tv_detail_releaseDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                tools:text="@string/tools_release_date"/>
+
+                            <TextView
+                                android:id="@+id/tv_detail_rating"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                tools:text="@string/tools_rating"/>
+                        </LinearLayout>
+
+                        <com.newfobject.popularmovies.ui.views.FavoriteImageView
+                            android:id="@+id/detailFavoriteView"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            tools:text="@string/tools_rating" />
+                            android:layout_gravity="center|right"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/favorite_selector"/>
+
                     </LinearLayout>
+
                 </LinearLayout>
 
             </RelativeLayout>
@@ -106,12 +126,31 @@
                 android:layout_below="@id/tv_detail_overview"
                 android:background="#fffafafa"
                 android:orientation="vertical"
-                android:padding="5dp">
+                android:padding="5dp"
+                android:visibility="invisible">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/trailers_title"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorAccent"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/trailers"
+                android:background="#fffafafa"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:visibility="invisible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reviews_title"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorAccent" />
             </LinearLayout>
