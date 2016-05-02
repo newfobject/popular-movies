@@ -9,6 +9,14 @@
     <string name="pref_sort_title">Sort movies by:</string>
     <string name="pref_sort_key">sort</string>
     <string name="pref_summary">Select preferable sort option</string>
+    <string name="pref_default_image_quality">w342</string>
+    <string name="pref_adult_checkbox">Show adult movies</string>
+    <bool name="pref_default_adult_checkbox">false</bool>
+    <string name="pref_adult_checkbox_summary">This option if selected will include adult movies</string>
+    <string name="pref_adult_check_box_key">adult</string>
+    <string name="pref_image_quality_key">image_quality_key</string>
+    <string name="pref_image_quality_summary">Select quality of posters</string>
+    <string name="pref_image_quality_title">Poster quality</string>
 
     <!--Setting ListPreference strings-->
     <array name="entries">
@@ -23,6 +31,18 @@
 
     </array>
 
+    <array name="image_quality_entries">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </array>
+
+    <array name="image_quality_values">
+        <item>w185</item>
+        <item>w342</item>
+        <item>w500</item>
+    </array>
+
     <!--Menus-->
     <string name="menu_settings_title">Settings</string>
     <string name="menu_scroll_top">Scroll to the top</string>
@@ -34,6 +54,9 @@
     <string name="delete_movie_from_favorites">Delete movie from favorites?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="no_trailer_found">This movie doesn\'t have any trailers</string>
+    <string name="share">Share</string>
+
 
     <array name="spinner_list">
         <item>Most Popular</item>

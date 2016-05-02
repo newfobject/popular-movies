@@ -2,14 +2,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:defaultValue="@string/pref_sort_default"
+        android:defaultValue="@string/pref_default_image_quality"
         android:enabled="true"
-        android:entries="@array/entries"
-        android:entryValues="@array/entry_values"
-        android:key="@string/pref_sort_key"
-        android:summary="@string/pref_summary"
-        android:title="@string/pref_sort_title">
+        android:entries="@array/image_quality_entries"
+        android:entryValues="@array/image_quality_values"
+        android:key="@string/pref_image_quality_key"
+        android:summary="@string/pref_image_quality_summary"
+        android:title="@string/pref_image_quality_title"/>
 
-    </ListPreference>
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_default_adult_checkbox"
+        android:key="@string/pref_adult_check_box_key"
+        android:summary="@string/pref_adult_checkbox_summary"
+        android:title="@string/pref_adult_checkbox"/>
 
 </PreferenceScreen>

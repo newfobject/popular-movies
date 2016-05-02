@@ -16,11 +16,11 @@ import android.text.TextUtils;
 
 
 public class MoviesProvider extends ContentProvider {
-    public static final String PROVIDER_NAME = MoviesContract.PROVIDER_NAME;
-    public static final Uri CONTENT_URI = MoviesContract.CONTENT_URI;
-    static final int MOVIES = 1;
-    static final int MOVIE_ID = 2;
-    static final UriMatcher urimatcher;
+    private static final String PROVIDER_NAME = MoviesContract.PROVIDER_NAME;
+    private static final Uri CONTENT_URI = MoviesContract.CONTENT_URI;
+    private static final int MOVIES = 1;
+    private static final int MOVIE_ID = 2;
+    private static final UriMatcher urimatcher;
 
     static {
         urimatcher = new UriMatcher(UriMatcher.NO_MATCH);

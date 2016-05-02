@@ -25,7 +25,7 @@ public class RestClient {
     private DetailsCallback mDetailsCallback;
     private APIService service;
 
-    public RestClient() {
+    private RestClient() {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -49,7 +49,7 @@ public class RestClient {
         movies.enqueue(new Callback<MovieItem.Response>() {
             @Override
             public void onResponse(Call<MovieItem.Response> call, Response<MovieItem.Response> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && moviesCallback != null) {
                     moviesCallback.onReadyMovies(response.body().getMovieItems());
                     Log.e(TAG, "onResponse: " + response.message());
                 } else {
@@ -71,7 +71,7 @@ public class RestClient {
         trailers.enqueue(new Callback<Trailer.Response>() {
             @Override
             public void onResponse(Call<Trailer.Response> call, Response<Trailer.Response> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && mDetailsCallback != null) {
                     mDetailsCallback.onReadyTrailers(response.body().getResults());
                 }
             }
@@ -91,7 +91,7 @@ public class RestClient {
         reviews.enqueue(new Callback<Review.Respond>() {
             @Override
             public void onResponse(Call<Review.Respond> call, Response<Review.Respond> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && mDetailsCallback != null) {
                     mDetailsCallback.onReadyReviews(response.body().getReviews());
                 }
             }

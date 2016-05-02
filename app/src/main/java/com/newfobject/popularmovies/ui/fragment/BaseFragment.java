@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +20,8 @@ public abstract class BaseFragment extends Fragment {
 
     PreCachingGridLayoutManager mLayoutManager;
     RecyclerView mRecyclerView;
+    private String mImageQualityPref;
+    private boolean mAdult;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,9 +36,7 @@ public abstract class BaseFragment extends Fragment {
         return view;
     }
 
-
-    public abstract void restoreFragmentState(Bundle savedInstanceState);
-
+    protected abstract void restoreFragmentState(Bundle savedInstanceState);
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -49,8 +48,10 @@ public abstract class BaseFragment extends Fragment {
         return false;
     }
 
-    public void init(View view) {
+    void init(View view) {
         Context context = getContext();
+        mImageQualityPref = Utility.getImageQualityPrefs(context);
+        mAdult = Utility.isAdult(context);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.movies_recyclerview);
         mLayoutManager = new PreCachingGridLayoutManager(context,
                 context.getResources().getInteger(R.integer.columns_number));
@@ -63,15 +64,32 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onStart() {
-        Log.d("base frag", "onStart: ");
         EventBus.getDefault().register(this);
         super.onStart();
     }
 
     @Override
     public void onStop() {
-        Log.d("base frag", "onStop: ");
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
+
+    @Override
+    public void onResume() {
+        String newImageQuality = Utility.getImageQualityPrefs(getContext());
+        if (!newImageQuality.equals(mImageQualityPref)) {
+            mImageQualityPref = newImageQuality;
+            onImageQualityPrefsChanged(newImageQuality);
+        }
+        boolean isAdult = Utility.isAdult(getContext());
+        if (mAdult != isAdult) {
+            mAdult = isAdult;
+            onAdultPrefsChanged(isAdult);
+        }
+        super.onResume();
+    }
+
+    protected abstract void onImageQualityPrefsChanged(String imageQualityPref);
+
+    protected abstract void onAdultPrefsChanged(boolean isAdult);
 }

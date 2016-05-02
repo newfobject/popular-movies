@@ -1,23 +1,34 @@
 package com.newfobject.popularmovies.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MovieItem implements Serializable {
+public class MovieItem implements Parcelable {
 
+    public static final Parcelable.Creator<MovieItem> CREATOR = new Parcelable.Creator<MovieItem>() {
+        @Override
+        public MovieItem createFromParcel(Parcel source) {
+            return new MovieItem(source);
+        }
+
+        @Override
+        public MovieItem[] newArray(int size) {
+            return new MovieItem[size];
+        }
+    };
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
-
     @SerializedName("adult")
     @Expose
     private boolean adult;
-
     @SerializedName("overview")
     @Expose
     private String overview;
@@ -55,6 +66,28 @@ public class MovieItem implements Serializable {
     @Expose
     private double voteAverage;
     private boolean isFavorite;
+
+    public MovieItem() {
+    }
+
+    private MovieItem(Parcel in) {
+        this.posterPath = in.readString();
+        this.adult = in.readByte() != 0;
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.genreIds = new ArrayList<>();
+        in.readList(this.genreIds, Integer.class.getClassLoader());
+        this.id = in.readInt();
+        this.originalTitle = in.readString();
+        this.originalLanguage = in.readString();
+        this.title = in.readString();
+        this.backdropPath = in.readString();
+        this.popularity = in.readDouble();
+        this.voteCount = in.readInt();
+        this.video = in.readByte() != 0;
+        this.voteAverage = in.readDouble();
+        this.isFavorite = in.readByte() != 0;
+    }
 
     public boolean isFavorite() {
         return isFavorite;
@@ -216,6 +249,30 @@ public class MovieItem implements Serializable {
 
     public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.posterPath);
+        dest.writeByte(adult ? (byte) 1 : (byte) 0);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+        dest.writeList(this.genreIds);
+        dest.writeInt(this.id);
+        dest.writeString(this.originalTitle);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.title);
+        dest.writeString(this.backdropPath);
+        dest.writeDouble(this.popularity);
+        dest.writeInt(this.voteCount);
+        dest.writeByte(video ? (byte) 1 : (byte) 0);
+        dest.writeDouble(this.voteAverage);
+        dest.writeByte(isFavorite ? (byte) 1 : (byte) 0);
     }
 
     public static class Response {

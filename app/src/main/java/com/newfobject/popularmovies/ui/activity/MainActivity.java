@@ -27,12 +27,12 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class MainActivity extends AppCompatActivity
         implements ImageAdapter.Callback, AdapterView.OnItemSelectedListener {
-    public static final String KEY = "main_activity";
-    public static final int RESULT_MOVIE_REQUEST = 1;
-    boolean mFavorite;
+    private static final String KEY = "main_activity";
+    private static final int RESULT_MOVIE_REQUEST = 1;
+    private boolean mFavorite;
     private int mPosition = -1;
     private int mMovieId;
-    private boolean mTwoPane = true;
+    private boolean mTwoPane;
     private int mFavoriteId = 2;
     private int mCurrSpinnerPosition = 0;
 
@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity
 
         initToolBar();
 
-        if (findViewById(R.id.detail_container) == null) mTwoPane = false;
-
+        mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
         if (savedInstanceState == null) {
             replaceFragment(mCurrSpinnerPosition);
         } else {
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    void replaceFragment(int id) {
+    private void replaceFragment(int id) {
         mCurrSpinnerPosition = id;
         String[] sortMode = getResources().getStringArray(R.array.entry_values);
         Bundle args = new Bundle();
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, RESULT_MOVIE_REQUEST);
         } else {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(DetailFragment.EXTRA_KEY_MOVIE_ITEM, movieItem);
+            bundle.putParcelable(DetailFragment.EXTRA_KEY_MOVIE_ITEM, movieItem);
             bundle.putInt(DetailFragment.EXTRA_KEY_ITEM_POSITION, position);
             DetailFragment detailFragment = new DetailFragment();
             detailFragment.setArguments(bundle);
@@ -159,16 +158,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
         EventBus.getDefault().register(this);
-        super.onStart();
+        super.onResume();
 
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onPause();
     }
 
     @Subscribe
@@ -185,7 +184,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Subscribe
-    public void onDeleteFromMaster(FavoriteDetailEvent favoriteDetailEvent) {
+    public void onEventFromMaster(FavoriteDetailEvent favoriteDetailEvent) {
         onEventFromDetails(null);
     }
 

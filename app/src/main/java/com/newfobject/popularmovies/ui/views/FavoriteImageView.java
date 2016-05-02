@@ -13,7 +13,7 @@ public class FavoriteImageView extends ImageView implements Checkable {
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked
     };
-    int squareDim = 1000000000;
+    private int squareDim = 1000000000;
     private boolean mChecked;
 
     public FavoriteImageView(Context context) {
@@ -100,9 +100,9 @@ public class FavoriteImageView extends ImageView implements Checkable {
                 return new SavedState[size];
             }
         };
-        protected boolean checked;
+        boolean checked;
 
-        protected SavedState(Parcelable superState) {
+        SavedState(Parcelable superState) {
             super(superState);
         }
 

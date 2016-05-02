@@ -2,14 +2,21 @@ package com.newfobject.popularmovies.ui.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,6 +42,7 @@ import com.squareup.picasso.Picasso;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -45,31 +53,38 @@ public class DetailFragment extends Fragment
         implements ObservableScrollViewCallbacks, RestClient.DetailsCallback {
     public static final String EXTRA_KEY_MOVIE_ITEM = "extra_key_movie_item";
     public static final String EXTRA_KEY_ITEM_POSITION = "item_position";
-    public static final String EXTRA_KEY_URI = "extra_key_uri";
     private static final String TAG = "detail_fragment";
-    public static String BACKDROP_URL = "http://image.tmdb.org/t/p/w780/";
-    private static String BASE_URL = "http://image.tmdb.org/t/p/w342/";
+    private static final String KEY_TRAILERS = "key_trailers";
+    private static final String KEY_REVIEWS = "key_reviews";
+    private static String BACKDROP_URL = "http://image.tmdb.org/t/p/w780/";
     private TextView mTvTitle;
     private TextView mTvReleaseDate;
     private TextView mTvRating;
     private TextView mTvOverview;
     private ImageView mIvBackdrop;
     private ImageView mIvPoster;
+    private ImageView mPlayTrailer;
     private ActionBar mActionBar;
-    private LinearLayout mTrailers;
+    private LinearLayout mTrailerLayout;
     private float mBackdropAlpha;
-    private LinearLayout mReviews;
+    private LinearLayout mReviewsLayout;
     private boolean mReviewsLoaded;
     private boolean mTrailersLoaded;
     private FavoriteImageView mFavoriteButton;
     private int mPosition;
     private MovieItem mMovieItem;
-
+    private ShareActionProvider mShareActionProvider;
+    private Trailer mTrailer;
+    private List<Review> mReviewList;
+    private List<Trailer> mTrailerList;
 
     public DetailFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
 
+    public MovieItem getMovieItem() {
+        return mMovieItem;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,26 +96,26 @@ public class DetailFragment extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         init(view);
-
-        getData(getActivity());
+        Log.d(TAG, "onViewCreated: ");
+        getData(getActivity(), savedInstanceState);
     }
 
-    private void getData(FragmentActivity activity) {
-        mMovieItem = (MovieItem) activity.getIntent()
-                .getSerializableExtra(DetailActivity.MOVIE_DETAIL_TAG);
+    private void getData(FragmentActivity activity, Bundle savedInstanceState) {
+        Bundle extras = activity.getIntent().getExtras();
+        if (extras != null) mMovieItem = extras.getParcelable(DetailActivity.MOVIE_DETAIL_TAG);
 
         if (mMovieItem == null) {
             Bundle bundle = this.getArguments();
 
             if (bundle != null) {
                 mPosition = bundle.getInt(EXTRA_KEY_ITEM_POSITION);
-                mMovieItem = (MovieItem) bundle.getSerializable(EXTRA_KEY_MOVIE_ITEM);
-                bindData(activity);
+                mMovieItem = bundle.getParcelable(EXTRA_KEY_MOVIE_ITEM);
+                bindData(activity, savedInstanceState);
             }
 
         } else {
             mPosition = activity.getIntent().getIntExtra(DetailActivity.MOVIE_POSITION_TAG, 0);
-            bindData(activity);
+            bindData(activity, savedInstanceState);
         }
     }
 
@@ -116,14 +131,13 @@ public class DetailFragment extends Fragment
         mTvOverview = (TextView) view.findViewById(R.id.tv_detail_overview);
         mIvBackdrop = (ImageView) view.findViewById(R.id.iv_detail_backdrop);
         mIvPoster = (ImageView) view.findViewById(R.id.iv_detail_poster);
-        mTrailers = (LinearLayout) view.findViewById(R.id.trailers);
-        mReviews = (LinearLayout) view.findViewById(R.id.reviews);
+        mTrailerLayout = (LinearLayout) view.findViewById(R.id.trailers);
+        mReviewsLayout = (LinearLayout) view.findViewById(R.id.reviews);
         mFavoriteButton = (FavoriteImageView) view.findViewById(R.id.detailFavoriteView);
-
-
+        mPlayTrailer = (ImageView) view.findViewById(R.id.play_trailer_detail);
     }
 
-    private void bindData(Context context) {
+    private void bindData(Context context, Bundle savedInstanceState) {
 
         String backdropPath = mMovieItem.getBackdropPath();
         String posterPath = mMovieItem.getPosterPath();
@@ -137,6 +151,7 @@ public class DetailFragment extends Fragment
         }
 
         if (posterPath != null) {
+            String BASE_URL = "http://image.tmdb.org/t/p/" + Utility.getImageQualityPrefs(context);
             Picasso
                     .with(context)
                     .load(BASE_URL.concat(posterPath))
@@ -157,9 +172,17 @@ public class DetailFragment extends Fragment
             mFavoriteButton.setChecked(true);
 
         RestClient restClient = RestClient.getInstance();
-        restClient.setDetailsCallback(this);
-        restClient.getTrailers(mMovieItem.getId());
-        restClient.getReviews(mMovieItem.getId(), 1);
+        if (savedInstanceState == null) {
+            restClient.setDetailsCallback(this);
+            restClient.getTrailers(mMovieItem.getId());
+            restClient.getReviews(mMovieItem.getId(), 1);
+        } else {
+            mTrailerList = savedInstanceState.getParcelableArrayList(KEY_TRAILERS);
+            onReadyTrailers(mTrailerList);
+            mReviewList = savedInstanceState.getParcelableArrayList(KEY_REVIEWS);
+            onReadyReviews(mReviewList);
+        }
+
 
         mFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,16 +203,16 @@ public class DetailFragment extends Fragment
     }
 
     @Override
-    public void onStart() {
+    public void onResume() {
         EventBus.getDefault().register(this);
-        super.onStart();
+        super.onResume();
     }
 
     @Override
-    public void onStop() {
-        Log.d(TAG, "onStop: ");
+    public void onPause() {
+        Log.d(TAG, "onPause: ");
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onPause();
     }
 
     @Subscribe
@@ -202,9 +225,10 @@ public class DetailFragment extends Fragment
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-            float alpha = Math.min(1, mBackdropAlpha / scrollY);
-            mIvBackdrop.setAlpha(alpha);
-            mIvBackdrop.setTranslationY(scrollY / 2);
+        float alpha = Math.min(1, mBackdropAlpha / scrollY);
+        mIvBackdrop.setAlpha(alpha);
+        mIvBackdrop.setTranslationY(scrollY / 2);
+        mPlayTrailer.setTranslationY(scrollY / 2);
     }
 
     @Override
@@ -229,6 +253,7 @@ public class DetailFragment extends Fragment
 
     @Override
     public void onReadyTrailers(final List<Trailer> trailers) {
+        mTrailerList = trailers;
         final LayoutInflater inflater = (LayoutInflater) getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -237,28 +262,37 @@ public class DetailFragment extends Fragment
         }
         mTrailersLoaded = true;
 
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+                ArrayList<Runnable> runnableList = new ArrayList<>();
+                boolean hasTrailers = false;
                 for (Trailer trailer : trailers) {
-                    boolean hasTrailers = false;
                     if (trailer.getName().toLowerCase().contains("trailer")) {
+                        if (!hasTrailers) mTrailer = trailer;
                         hasTrailers = true;
-                        final View view = inflater.inflate(R.layout.item_trailer, mTrailers, false);
+                        final View view = inflater.inflate(R.layout.item_trailer, mTrailerLayout, false);
                         TextView trailerTitle = (TextView) view.findViewById(R.id.trailer_title);
                         trailerTitle.setText(trailer.getName());
                         view.setOnClickListener(new TrailerClickListener(getContext(), trailer));
-                        getActivity().runOnUiThread(new Runnable() {
+                        Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
-                                mTrailers.addView(view);
+                                mTrailerLayout.addView(view);
                             }
-                        });
+                        };
+                        runnableList.add(runnable);
                     }
-                    if (hasTrailers) getActivity().runOnUiThread(new Runnable() {
+                }
+                addViewToFragment(runnableList, mTrailerLayout);
+
+                if (mTrailer != null && mShareActionProvider != null) {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTrailers.setVisibility(View.VISIBLE);
+                            mShareActionProvider.setShareIntent(createShareMovieIntent());
+                            mPlayTrailer.setOnClickListener(new TrailerClickListener(getContext(), mTrailer));
                         }
                     });
                 }
@@ -269,6 +303,7 @@ public class DetailFragment extends Fragment
 
     @Override
     public void onReadyReviews(final List<Review> reviews) {
+        mReviewList = reviews;
         final LayoutInflater inflater = (LayoutInflater) getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -276,32 +311,68 @@ public class DetailFragment extends Fragment
             return;
         }
         mReviewsLoaded = true;
-
         new Thread(new Runnable() {
             @Override
             public void run() {
+                ArrayList<Runnable> runnableList = new ArrayList<>();
                 for (Review review : reviews) {
-                    final View view = inflater.inflate(R.layout.item_review, mReviews, false);
+                    final View view = inflater.inflate(R.layout.item_review, mReviewsLayout, false);
                     TextView authorView = (TextView) view.findViewById(R.id.review_author);
                     TextView contentView = (TextView) view.findViewById(R.id.review_content);
                     authorView.setText(review.getAuthor());
                     contentView.setText(review.getContent());
-                    getActivity().runOnUiThread(new Runnable() {
+                    Runnable runnable = new Runnable() {
                         @Override
                         public void run() {
-                            mReviews.addView(view);
+                            mReviewsLayout.addView(view);
                         }
-                    });
+                    };
+                    runnableList.add(runnable);
                 }
-                if (!reviews.isEmpty()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mReviews.setVisibility(View.VISIBLE);
-                        }
-                    });
-                }
+                addViewToFragment(runnableList, mReviewsLayout);
             }
         }).start();
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_details, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+        Log.d(TAG, "onCreateOptionsMenu: ");
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        if (mTrailer != null) {
+            mShareActionProvider.setShareIntent(createShareMovieIntent());
+        }
+    }
+
+    private Intent createShareMovieIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mMovieItem.getTitle() + " "
+                + "https://www.youtube.com/watch?v=" + mTrailer.getKey());
+        return shareIntent;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(KEY_TRAILERS, (ArrayList<? extends Parcelable>) mTrailerList);
+        outState.putParcelableArrayList(KEY_REVIEWS, (ArrayList<? extends Parcelable>) mReviewList);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void addViewToFragment(ArrayList<Runnable> runnableList, final LinearLayout layout) {
+        for (Runnable runnable : runnableList) {
+            getActivity().runOnUiThread(runnable);
+        }
+        if (!runnableList.isEmpty()) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    layout.setVisibility(View.VISIBLE);
+                }
+            });
+        }
     }
 }

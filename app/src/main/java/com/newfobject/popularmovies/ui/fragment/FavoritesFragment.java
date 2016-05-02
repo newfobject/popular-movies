@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.newfobject.popularmovies.data.provider.MoviesContract;
 import com.newfobject.popularmovies.events.FavoriteMasterEvent;
 import com.newfobject.popularmovies.ui.adapter.CursorAdapter;
+import com.newfobject.popularmovies.utils.Utility;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -40,6 +41,16 @@ public class FavoritesFragment extends BaseFragment
     }
 
     @Override
+    public void onImageQualityPrefsChanged(String imageQualityPref) {
+        mAdapter.setImageSize(imageQualityPref);
+    }
+
+    @Override
+    public void onAdultPrefsChanged(boolean isAdult) {
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
@@ -60,6 +71,7 @@ public class FavoritesFragment extends BaseFragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mAdapter == null) {
             mAdapter = new CursorAdapter(getContext(), data);
+            mAdapter.setImageSize(Utility.getImageQualityPrefs(getContext()));
             mRecyclerView.setAdapter(mAdapter);
         } else {
             mAdapter.changeCursor(data);
@@ -74,7 +86,10 @@ public class FavoritesFragment extends BaseFragment
 
     @Subscribe
     public void deleteMovie(FavoriteMasterEvent favoriteMasterEvent) {
-        if (mAdapter != null)
-            mAdapter.itemFavoriteFromDetails(favoriteMasterEvent.getAdapterPosition());
+        if (mAdapter != null) {
+            boolean favorite = favoriteMasterEvent.isFavorite();
+            int position = favoriteMasterEvent.getAdapterPosition();
+            mAdapter.itemFavoriteFromDetails(position, favorite);
+        }
     }
 }

@@ -18,11 +18,11 @@ import static com.newfobject.popularmovies.data.provider.MoviesContract.TITLE;
 import static com.newfobject.popularmovies.data.provider.MoviesContract.VOTE_AVERAGE;
 import static com.newfobject.popularmovies.data.provider.MoviesContract.VOTE_COUNT;
 
-public class DbHelper extends SQLiteOpenHelper {
-    static final String DATABASE_NAME = "movies_db";
+class DbHelper extends SQLiteOpenHelper {
     static final String TABLE_NAME = "movies";
-    static final int DATABASE_VERSION = 1;
-    static final String CREATE_DB_TABLE =
+    private static final String DATABASE_NAME = "movies_db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String CREATE_DB_TABLE =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     "_id" + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     MOVIE_ID + " INTEGER UNIQUE, " +

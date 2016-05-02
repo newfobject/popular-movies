@@ -10,124 +10,150 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iv_detail_backdrop"
+            <FrameLayout
+                android:id="@+id/backdrop_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/content_description" />
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true">
+
+                <ImageView
+                    android:id="@+id/iv_detail_backdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/content_description"/>
+
+                <ImageView
+                    android:id="@+id/play_trailer_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/content_description_play_trailer"
+                    android:src="@drawable/ic_play_circle_filled_black_60dp"
+                    android:tintMode="multiply"/>
+            </FrameLayout>
 
             <View
                 android:id="@+id/anchor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp">
+                android:layout_below="@+id/backdrop_layout">
             </View>
 
             <RelativeLayout
-                android:id="@+id/poster_details"
+                android:id="@+id/poster_details_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/anchor">
+                android:layout_below="@+id/anchor"
+                android:background="#fffafafa"
+                android:padding="5dp">
 
-                <LinearLayout
-                    android:id="@+id/detail_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_alignParentLeft="false"
-                    android:orientation="horizontal">
+                <RelativeLayout
+                    android:id="@+id/poster_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/detailFavoriteView"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="10dp">
 
-                    <FrameLayout
-                        android:layout_width="@dimen/detail_poster_image_width"
-                        android:layout_height="@dimen/detail_poster_image_height"
-                        android:layout_gravity="bottom|center|right"
-                        android:layout_marginLeft="5dp">
+                    <com.newfobject.popularmovies.ui.views.AspectKeepingImageView
+                        android:id="@+id/iv_detail_poster"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="false"
+                        android:layout_alignParentTop="true"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/content_description"
+                        android:maxWidth="100dp"
+                        />
 
-                        <ImageView
-                            android:id="@+id/iv_detail_poster"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:adjustViewBounds="true"
-                            android:contentDescription="@string/content_description" />
-                    </FrameLayout>
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_detail_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
-                        android:background="#fffafafa"
-                        android:orientation="horizontal"
-                        android:weightSum="10">
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_toRightOf="@+id/iv_detail_poster"
+                        android:paddingLeft="10dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                        android:textColor="@android:color/black"
+                        android:textSize="19sp"
+                        tools:text="@string/tools_title"/>
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="left|bottom|center"
-                            android:layout_weight="9"
-                            android:orientation="vertical"
-                            android:paddingBottom="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingTop="5dp">
+                    <TextView
+                        android:id="@+id/tv_detail_releaseDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_detail_title"
+                        android:layout_toRightOf="@+id/iv_detail_poster"
+                        android:paddingLeft="10dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        tools:text="@string/tools_release_date"/>
 
-                            <TextView
-                                android:id="@+id/tv_detail_title"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
-                                android:textColor="@android:color/black"
-                                tools:text="@string/tools_title"/>
+                    <TextView
+                        android:id="@+id/tv_detail_rating"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_detail_releaseDate"
+                        android:layout_toRightOf="@+id/iv_detail_poster"
+                        android:paddingLeft="10dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        tools:text="@string/tools_rating"/>
+                </RelativeLayout>
 
-                            <TextView
-                                android:id="@+id/tv_detail_releaseDate"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                tools:text="@string/tools_release_date"/>
+                <com.newfobject.popularmovies.ui.views.FavoriteImageView
+                    android:id="@+id/detailFavoriteView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBaseline="@+id/poster_details"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="top|center|right"
+                    android:padding="7dp"
+                    android:src="@drawable/favorite_selector"
+                    />
 
-                            <TextView
-                                android:id="@+id/tv_detail_rating"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                tools:text="@string/tools_rating"/>
-                        </LinearLayout>
 
-                        <com.newfobject.popularmovies.ui.views.FavoriteImageView
-                            android:id="@+id/detailFavoriteView"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center|right"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:src="@drawable/favorite_selector"/>
+                <TextView
+                    android:id="@+id/tv_detail_overview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/poster_details"
+                    android:padding="10dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    tools:text="@string/tools_overview"
+                    />
 
-                    </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignBottom="@id/tv_detail_overview"
+                    android:alpha="0.5"
+                    android:background="@android:color/darker_gray"/>
 
-                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignTop="@id/tv_detail_overview"
+                    android:alpha="0.5"
+                    android:background="@android:color/darker_gray"/>
 
             </RelativeLayout>
-
-            <TextView
-                android:id="@+id/tv_detail_overview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/poster_details"
-                android:background="#fffafafa"
-                android:padding="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                tools:text="@string/tools_overview" />
 
             <LinearLayout
                 android:id="@+id/trailers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_detail_overview"
+                android:layout_below="@+id/poster_details_main"
                 android:background="#fffafafa"
                 android:orientation="vertical"
-                android:padding="5dp"
-                android:visibility="invisible">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -144,8 +170,8 @@
                 android:layout_below="@id/trailers"
                 android:background="#fffafafa"
                 android:orientation="vertical"
-                android:padding="5dp"
-                android:visibility="invisible">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"

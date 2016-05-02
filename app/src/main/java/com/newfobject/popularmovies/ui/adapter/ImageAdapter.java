@@ -26,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -33,14 +34,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>
         implements RestClient.OnReadyMoviesCallback {
 
     private static final String TAG = "image_adapter";
-    private static final String BASE_URL = "http://image.tmdb.org/t/p/w342/";
+    private static final String BASE_URL = "http://image.tmdb.org/t/p/";
     private List<MovieItem> movies = new ArrayList<>();
     private Set<Integer> mFavoriteIdSet = new HashSet<>();
     private Context mContext;
+    private String mImageSize;
+    private boolean mAdult;
 
     public ImageAdapter(Context context) {
         mContext = context;
         getFavoriteIdList();
+    }
+
+    public void setAdult(boolean adult) {
+        mAdult = adult;
+    }
+
+    public void setImageSize(String imageSize) {
+        mImageSize = imageSize;
     }
 
     private void getFavoriteIdList() {
@@ -80,7 +91,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>
         String rating = String.valueOf(movies.get(position).getVoteAverage());
         holder.titleView.setText(title);
         holder.ratingView.setText(rating);
-        String imageUrl = BASE_URL + movies.get(position).getPosterPath();
+        String imageUrl = BASE_URL + mImageSize + movies.get(position).getPosterPath();
         Picasso.with(mContext)
                 .load(imageUrl)
                 .transform(PaletteTransformation.instance())
@@ -131,21 +142,26 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>
 
     @Override
     public void onReadyMovies(List<MovieItem> movies) {
-        for (int i = 0; i < movies.size(); i++) {
-            if (mFavoriteIdSet.contains(movies.get(i).getId())) {
-                movies.get(i).setFavorite(true);
+
+        for (Iterator<MovieItem> iterator = movies.iterator(); iterator.hasNext(); ) {
+            MovieItem movieItem = iterator.next();
+            if (!mAdult && movieItem.isAdult()) iterator.remove();
+            if (mFavoriteIdSet.contains(movieItem.getId())) {
+                movieItem.setFavorite(true);
             }
         }
         addToAdapter(movies);
     }
 
-
-    public void movieFavoriteFromDetail(int position, boolean favorite) {
+    // if app runs on a phone, we have to just update adapter's items
+    public void movieFavoriteFromDetail(int position, boolean favorite, boolean has_two_panes) {
         MovieItem movieItem = movies.get(position);
-        if (favorite) {
-            Utility.addMovieToFavorites(mContext, movieItem);
-        } else {
-            Utility.deleteFromFavorites(mContext, movieItem.getId());
+        if (has_two_panes) {
+            if (favorite) {
+                Utility.addMovieToFavorites(mContext, movieItem);
+            } else {
+                Utility.deleteFromFavorites(mContext, movieItem.getId());
+            }
         }
         movieItem.setFavorite(favorite);
         notifyItemChanged(position);

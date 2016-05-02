@@ -111,5 +111,17 @@ public class Utility {
         context.getContentResolver().delete(uri, null, null);
     }
 
+    public static String getImageQualityPrefs(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(context.getResources()
+                .getString(R.string.pref_image_quality_key), "w342");
+    }
+
+    public static boolean isAdult(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(context.getResources()
+                .getString(R.string.pref_adult_check_box_key), false);
+    }
+
 
 }

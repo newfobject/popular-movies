@@ -9,7 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface APIService {
+interface APIService {
     @GET("discover/movie")
     Call<MovieItem.Response> movies(
             @Query("api_key") String apiKey,

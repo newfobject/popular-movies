@@ -23,13 +23,17 @@ import com.newfobject.popularmovies.utils.Utility;
 import com.squareup.picasso.Picasso;
 
 public class CursorAdapter extends BaseCursorRecyclerViewAdapter<CursorAdapter.ViewHolder> {
-    private static final String TAG = ImageAdapter.class.getSimpleName();
-    private static final String BASE_URL = "http://image.tmdb.org/t/p/w342/";
+    private static final String BASE_URL = "http://image.tmdb.org/t/p/";
     private final Context mContext;
+    private String mImageSize;
 
     public CursorAdapter(Context context, Cursor cursor) {
         super(cursor);
         mContext = context;
+    }
+
+    public void setImageSize(String imageSize) {
+        mImageSize = imageSize;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class CursorAdapter extends BaseCursorRecyclerViewAdapter<CursorAdapter.V
         holder.titleView.setText(title);
         holder.ratingView.setText(rating);
         setOnClickListeners(holder);
-        String imageUrl = BASE_URL + cursor.getString(MoviesContract.Projections.ID_POSTER_PATH);
+        String imageUrl = BASE_URL + mImageSize + cursor.getString(MoviesContract.Projections.ID_POSTER_PATH);
         Picasso.with(holder.itemView.getContext())
                 .load(imageUrl)
                 .transform(PaletteTransformation.instance())
@@ -72,7 +76,7 @@ public class CursorAdapter extends BaseCursorRecyclerViewAdapter<CursorAdapter.V
         return new ViewHolder(view);
     }
 
-    public void setOnClickListeners(final ViewHolder holder) {
+    private void setOnClickListeners(final ViewHolder holder) {
         final Cursor cursor = getCursor();
         cursor.moveToPosition(holder.getAdapterPosition());
         final int movieId = cursor.getInt(MoviesContract.Projections.ID);
@@ -97,7 +101,8 @@ public class CursorAdapter extends BaseCursorRecyclerViewAdapter<CursorAdapter.V
         });
     }
 
-    public void itemFavoriteFromDetails(int position) {
+    public void itemFavoriteFromDetails(int position, boolean favorite) {
+        if (favorite) return;
         Cursor cursor = getCursor();
         cursor.moveToPosition(position);
         Utility.deleteFromFavorites(mContext, cursor.getInt(MoviesContract.Projections.ID));

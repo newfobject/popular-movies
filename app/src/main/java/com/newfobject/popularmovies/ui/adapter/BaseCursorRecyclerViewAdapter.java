@@ -5,12 +5,12 @@ import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class BaseCursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
-    Cursor mCursor;
+    private Cursor mCursor;
     private boolean mDataValid;
     private int mRowIdColumn;
     private DataSetObserver mDataSetObserver;
 
-    public BaseCursorRecyclerViewAdapter(Cursor cursor) {
+    BaseCursorRecyclerViewAdapter(Cursor cursor) {
         mCursor = cursor;
         mDataValid = cursor != null;
         mRowIdColumn = mDataValid ? mCursor.getColumnIndex("movie_id") : -1;
@@ -33,11 +33,11 @@ public abstract class BaseCursorRecyclerViewAdapter<VH extends RecyclerView.View
         return 0;
     }
 
-    public Cursor getCursor() {
+    Cursor getCursor() {
         return mCursor;
     }
 
-    public abstract void onBindViewHolder(VH viewHolder, Cursor cursor, int position);
+    protected abstract void onBindViewHolder(VH viewHolder, Cursor cursor, int position);
 
     @Override
     public void onBindViewHolder(VH viewHolder, int position) {

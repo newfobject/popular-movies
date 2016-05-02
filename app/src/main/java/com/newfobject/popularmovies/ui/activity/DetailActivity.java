@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.newfobject.popularmovies.R;
+import com.newfobject.popularmovies.data.model.MovieItem;
 import com.newfobject.popularmovies.events.FavoriteMasterEvent;
 import com.newfobject.popularmovies.ui.fragment.DetailFragment;
+import com.newfobject.popularmovies.utils.Utility;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,24 +40,30 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         EventBus.getDefault().unregister(this);
-        super.onStop();
+        super.onPause();
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
         EventBus.getDefault().register(this);
-        super.onStart();
+        super.onResume();
     }
 
     @Subscribe
     public void onResult(FavoriteMasterEvent favoriteMasterEvent) {
-        Log.d(DetailActivity.class.getSimpleName(), "onResult: ");
         Intent returnIntent = new Intent();
         returnIntent.putExtra(EXTRA_POSITION, favoriteMasterEvent.getAdapterPosition());
         returnIntent.putExtra(EXTRA_FAVORITE, favoriteMasterEvent.isFavorite());
         returnIntent.putExtra(EXTRA_MOVIE_ID, favoriteMasterEvent.getMovieId());
+        DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.detail_container);
+        MovieItem movieItem = detailFragment.getMovieItem();
+        if (favoriteMasterEvent.isFavorite()) {
+            Utility.addMovieToFavorites(this, movieItem);
+        } else {
+            Utility.deleteFromFavorites(this, favoriteMasterEvent.getMovieId());
+        }
         setResult(RESULT_OK, returnIntent);
     }
 }

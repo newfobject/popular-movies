@@ -19,10 +19,39 @@ import java.util.WeakHashMap;
 
 public final class PaletteTransformation implements Transformation {
     private static final PaletteTransformation INSTANCE = new PaletteTransformation();
-    private static final Map<Bitmap, Palette> CACHE = new WeakHashMap<Bitmap, Palette>();
+    private static final Map<Bitmap, Palette> CACHE = new WeakHashMap<>();
+
+    private PaletteTransformation() {
+    }
+
+    private static Palette getPalette(Bitmap bitmap) {
+        return CACHE.get(bitmap);
+    }
+
+    /**
+     * Obtains a {@link PaletteTransformation} to extract {@link Palette} information.
+     * @return A {@link PaletteTransformation}
+     */
+    public static PaletteTransformation instance() {
+        return INSTANCE;
+    }
+
+    //# Transformation Contract
+    @Override
+    public final Bitmap transform(Bitmap source) {
+        final Palette palette = Palette.generate(source);
+        CACHE.put(source, palette);
+        return source;
+    }
+
+    @Override
+    public String key() {
+        return ""; // Stable key for all requests. An unfortunate requirement.
+    }
 
     /**
      * A {@link Target} that receives {@link Palette} information in its callback.
+     *
      * @see Target
      */
     public static abstract class PaletteTarget implements Target {
@@ -33,30 +62,29 @@ public final class PaletteTransformation implements Transformation {
          */
         protected abstract void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from, Palette palette);
 
-        @Override public final void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        @Override
+        public final void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             final Palette palette = getPalette(bitmap);
             onBitmapLoaded(bitmap, from, palette);
         }
     }
 
-    public static Palette getPalette(Bitmap bitmap) {
-        return CACHE.get(bitmap);
-    }
-
     /**
      * A {@link Callback} that receives {@link Palette} information in its callback.
+     *
      * @see Callback
      */
     public static abstract class PaletteCallback implements Callback {
         private WeakReference<ImageView> mImageView;
 
         public PaletteCallback(@NonNull ImageView imageView) {
-            mImageView = new WeakReference<ImageView>(imageView);
+            mImageView = new WeakReference<>(imageView);
         }
 
         protected abstract void onSuccess(int backgroundColor, int textColor);
 
-        @Override public final void onSuccess() {
+        @Override
+        public final void onSuccess() {
             if (getImageView() == null) {
                 return;
             }
@@ -100,25 +128,4 @@ public final class PaletteTransformation implements Transformation {
             return mImageView.get();
         }
     }
-
-    /**
-     * Obtains a {@link PaletteTransformation} to extract {@link Palette} information.
-     * @return A {@link PaletteTransformation}
-     */
-    public static PaletteTransformation instance() {
-        return INSTANCE;
-    }
-
-    //# Transformation Contract
-    @Override public final Bitmap transform(Bitmap source) {
-        final Palette palette = Palette.generate(source);
-        CACHE.put(source, palette);
-        return source;
-    }
-
-    @Override public String key() {
-        return ""; // Stable key for all requests. An unfortunate requirement.
-    }
-
-    private PaletteTransformation() { }
 }
