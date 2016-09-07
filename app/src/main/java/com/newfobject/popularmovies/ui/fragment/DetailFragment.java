@@ -181,6 +181,7 @@ public class DetailFragment extends Fragment
             onReadyTrailers(mTrailerList);
             mReviewList = savedInstanceState.getParcelableArrayList(KEY_REVIEWS);
             onReadyReviews(mReviewList);
+            mTrailer = mTrailerList.get(0);
         }
 
 
@@ -295,6 +296,8 @@ public class DetailFragment extends Fragment
                             mPlayTrailer.setOnClickListener(new TrailerClickListener(getContext(), mTrailer));
                         }
                     });
+                } else {
+                    Log.d(TAG, "run: trailer null andor share null");
                 }
             }
         }).start();
@@ -339,10 +342,10 @@ public class DetailFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_details, menu);
         MenuItem menuItem = menu.findItem(R.id.action_share);
-        Log.d(TAG, "onCreateOptionsMenu: ");
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
         if (mTrailer != null) {
             mShareActionProvider.setShareIntent(createShareMovieIntent());
+            mPlayTrailer.setOnClickListener(new TrailerClickListener(getContext(), mTrailer));
         }
     }
 
